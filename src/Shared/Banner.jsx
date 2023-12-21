@@ -3,7 +3,7 @@ import Button from "../Components/Button";
 
 const Banner = () => {
   return (
-    <div className="flex justify-center items-center bg-gradient-to-t from-primary/30 h-[90vh] px-4 sm:px-10 lg:px-40">
+    <div className="flex justify-center items-center bg-gradient-to-t from-primary/30 h-screen px-4 sm:px-10 lg:px-40">
       <div>
         <h3 className="text-4xl sm:text-5xl lg:text-7xl text-black font-bold text-center leading-[50px] sm:leading-[60px] lg:leading-[90px]">
           Organize Your Daily Task Easily <br className="hidden lg:block" />
