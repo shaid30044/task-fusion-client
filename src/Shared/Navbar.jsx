@@ -49,8 +49,8 @@ const Navbar = () => {
                 to={path}
                 className={({ isActive }) =>
                   isActive
-                    ? "text-white bg-primary shadow-xl shadow-primary rounded-md px-3 py-1.5"
-                    : "hover:text-white hover:bg-primary rounded-md hover:shadow-xl hover:shadow-primary duration-300 px-3 py-1.5"
+                    ? "text-white bg-primary shadow-xl shadow-primary rounded-full px-3 py-1.5"
+                    : "hover:text-white hover:bg-primary rounded-full hover:shadow-xl hover:shadow-primary duration-300 px-3 py-1.5"
                 }
               >
                 {page}
