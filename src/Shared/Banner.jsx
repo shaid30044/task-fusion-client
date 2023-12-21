@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import Button from "../Components/Button";
 
 const Banner = () => {
@@ -19,7 +20,9 @@ const Banner = () => {
         </p>
 
         <div className="flex justify-center pt-10">
-          <Button value={"Let's Explore"} />
+          <Link to="/signUp">
+            <Button value={"Let's Explore"} />
+          </Link>
         </div>
       </div>
     </div>
