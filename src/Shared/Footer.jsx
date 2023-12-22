@@ -21,8 +21,8 @@ const Footer = () => {
       path: "/prices",
     },
     {
-      page: "Dashboard",
-      path: "/dashboard",
+      page: "Task Dashboard",
+      path: "/taskDashboard",
     },
   ];
 

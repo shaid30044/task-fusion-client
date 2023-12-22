@@ -3,8 +3,8 @@ import Root from "../Root";
 import Home from "../pages/Home";
 import SignUp from "../pages/SignUp";
 import SignIn from "../pages/SignIn";
-import Dashboard from "../pages/Dashboard";
 import Prices from "../pages/Prices";
+import TaskDashboard from "../pages/TaskDashboard";
 
 const router = createBrowserRouter([
   {
@@ -20,8 +20,8 @@ const router = createBrowserRouter([
         element: <Prices />,
       },
       {
-        path: "/dashboard",
-        element: <Dashboard />,
+        path: "/taskDashboard",
+        element: <TaskDashboard />,
       },
       {
         path: "/signIn",
