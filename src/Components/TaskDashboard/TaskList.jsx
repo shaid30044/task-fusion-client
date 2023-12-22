@@ -4,12 +4,44 @@ import useOnGoing from "../../Hooks/useOnGoing";
 import useToDo from "../../Hooks/useToDO";
 import useAxiosPublic from "../../Hooks/useAxiosPublic";
 import toast, { Toaster } from "react-hot-toast";
+import { MdDelete, MdModeEdit } from "react-icons/md";
+import Button from "../Button";
+import { useForm } from "react-hook-form";
 
 const TaskList = () => {
   const [toDo, toDoRefetch] = useToDo();
   const [onGoing, onGoingRefetch] = useOnGoing();
   const [complete, completeRefetch] = useComplete();
   const axiosPublic = useAxiosPublic();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const onSubmit = async (data) => {
+    const newTask = {
+      title: data.title,
+      description: data.description,
+      priority: data.priority,
+      deadline: data.deadline,
+    };
+
+    toast.promise(
+      axiosPublic.post("/toDo", newTask).then(() => {
+        toDoRefetch();
+        document.getElementById("my_modal_2").close();
+      }),
+      {
+        loading: "Adding...",
+        success: <b>New Task Added successful!</b>,
+        error: <b>New Task Added failed!</b>,
+      },
+      {
+        duration: 4000,
+      }
+    );
+  };
 
   const handleToDoDelete = (id) => {
     Swal.fire({
@@ -111,124 +143,234 @@ const TaskList = () => {
   };
 
   return (
-    <div className="bg-past px-4 sm:px-10 lg:px-20 py-20">
+    <div className="px-4 sm:px-10 lg:px-20 pt-10 pb-32">
       <div>
         <Toaster />
       </div>
-      <div className="h-[90vh]">
-        {/* toDo */}
 
-        <div className="overflow-y-scroll bg-white rounded-xl h-1/3 px-6">
-          <h3 className="text-2xl font-bold text-primary py-4">To-Do List</h3>
+      <div className="grid grid-cols-2 gap-10">
+        <div>
           <div>
-            {toDo.map((todo, idx) => (
-              <div
-                key={idx}
-                className="grid grid-cols-4 items-center gap-2 py-1"
-              >
-                <p>
-                  <span>{idx + 1}. </span>
-                  {todo.title}
-                </p>
+            <div
+              onClick={() => document.getElementById("my_modal_2").showModal()}
+            >
+              <Button value={"Add Task"} />
+            </div>
 
-                <div className="flex justify-center">
-                  <p>{todo.deadline}</p>
-                </div>
+            <dialog id="my_modal_2" className="modal">
+              <div className="modal-box">
+                <form
+                  onSubmit={handleSubmit(onSubmit)}
+                  className="flex flex-col gap-y-4 w-full"
+                >
+                  <input
+                    type="text"
+                    {...register("title", { required: true })}
+                    placeholder="Title"
+                    className="bg-past/70 outline-none w-full px-4 py-2"
+                  />
+                  {errors.title && (
+                    <span className="text-red font-medium">
+                      Title is required
+                    </span>
+                  )}
 
-                <div className="flex justify-center">
-                  <span className="text-sm font-medium text-primary bg-primary/10 rounded-full px-3 py-1">
-                    {todo.priority}
-                  </span>
-                </div>
+                  <input
+                    type="text"
+                    {...register("description", { required: true })}
+                    placeholder="Description"
+                    className="bg-past/70 outline-none w-full px-4 py-2"
+                  />
+                  {errors.description && (
+                    <span className="text-red font-medium">
+                      Description is required
+                    </span>
+                  )}
 
-                <div className="flex justify-center">
-                  <button
-                    onClick={() => handleToDoDelete(todo._id)}
-                    className="btn btn-sm normal-case text-base bg-transparent hover:bg-red-500 text-red-500 hover:text-white duration-300 shadow-none border-2 border-red-500 hover:border-none"
-                  >
-                    Delete
-                  </button>
-                </div>
+                  <input
+                    type="text"
+                    {...register("priority", { required: true })}
+                    placeholder="Priority"
+                    className="bg-past/70 outline-none w-full px-4 py-2"
+                  />
+                  {errors.priority && (
+                    <span className="text-red font-medium">
+                      Priority is required
+                    </span>
+                  )}
+
+                  <input
+                    type="text"
+                    {...register("deadline", { required: true })}
+                    placeholder="Day, DD/MM/YYYY"
+                    className="bg-past/70 outline-none w-full px-4 pt-2 pb-4"
+                  />
+                  {errors.deadline && (
+                    <span className="text-red font-medium">
+                      Deadline is required
+                    </span>
+                  )}
+
+                  <div>
+                    <Button value={"Add"} />
+                  </div>
+                </form>
               </div>
-            ))}
+              <form method="dialog" className="modal-backdrop">
+                <button>close</button>
+              </form>
+            </dialog>
           </div>
         </div>
 
-        {/* onGoing */}
+        <div className="h-[80vh]">
+          {/* toDo */}
 
-        <div className="overflow-y-scroll bg-white rounded-xl h-1/3 px-6 my-10">
-          <h3 className="text-2xl font-bold text-primary py-4">OnGoing List</h3>
-          <div>
-            {onGoing.map((ongoing, idx) => (
-              <div
-                key={idx}
-                className="grid grid-cols-4 items-center gap-2 py-1"
-              >
-                <p>
-                  <span>{idx + 1}. </span>
-                  {ongoing.title}
-                </p>
+          <div className="overflow-y-scroll border-2 bg-white rounded-3xl h-1/3 px-6">
+            <h3 className="text-2xl font-bold text-primary py-4">To-Do List</h3>
+            <div>
+              {toDo.map((todo, idx) => (
+                <div
+                  key={idx}
+                  className="flex justify-between items-center gap-10 bg-primary/20 rounded-3xl p-6 my-4"
+                >
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <p className="text-lg font-medium">{todo.title}</p>
+                      <div className="flex justify-center">
+                        <span className="text-[11px] font-medium text-white bg-primary rounded-full px-2 py-0.5">
+                          {todo.priority}
+                        </span>
+                      </div>
+                    </div>
 
-                <div className="flex justify-center">
-                  <p>{ongoing.deadline}</p>
+                    <p className="text-black/60 font-medium pt-1 pb-2">
+                      {todo.description}
+                    </p>
+
+                    <p className="text-black/60 text-sm">{todo.deadline}</p>
+                  </div>
+
+                  <div className="flex flex-col justify-center items-center gap-4">
+                    <button
+                      onClick={() => handleToDoDelete(todo._id)}
+                      className="btn btn-sm normal-case text-xl bg-transparent hover:bg-transparent text-red-500 duration-300 shadow-none border-none hover:scale-125 hover:border-none"
+                    >
+                      <MdDelete />
+                    </button>
+
+                    <button
+                      onClick={() => handleToDoEdit(complete._id)}
+                      className="btn btn-sm normal-case text-xl bg-transparent hover:bg-transparent text-red-500 duration-300 shadow-none border-none hover:scale-125 hover:border-none"
+                    >
+                      <MdModeEdit />
+                    </button>
+                  </div>
                 </div>
-
-                <div className="flex justify-center">
-                  <span className="text-sm font-medium text-primary bg-primary/10 rounded-full px-3 py-1">
-                    {ongoing.priority}
-                  </span>
-                </div>
-
-                <div className="flex justify-center">
-                  <button
-                    onClick={() => handleOnGoingDelete(ongoing._id)}
-                    className="btn btn-sm normal-case text-base bg-transparent hover:bg-red-500 text-red-500 hover:text-white duration-300 shadow-none border-2 border-red-500 hover:border-none"
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
 
-        {/* complete */}
+          {/* onGoing */}
 
-        <div className="overflow-y-scroll bg-white rounded-xl h-1/3 px-6">
-          <h3 className="text-2xl font-bold text-primary py-4">
-            Complete List
-          </h3>
-          <div>
-            {complete.map((complete, idx) => (
-              <div
-                key={idx}
-                className="grid grid-cols-4 items-center gap-2 py-1"
-              >
-                <p>
-                  <span>{idx + 1}. </span>
-                  {complete.title}
-                </p>
+          <div className="overflow-y-scroll border-2 bg-white rounded-3xl h-1/3 px-6 my-4">
+            <h3 className="text-2xl font-bold text-primary py-4">
+              OnGoing List
+            </h3>
+            <div>
+              {onGoing.map((ongoing, idx) => (
+                <div
+                  key={idx}
+                  className="flex justify-between items-center gap-10 bg-primary/20 rounded-3xl p-6 my-4"
+                >
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <p className="text-lg font-medium">{ongoing.title}</p>
+                      <div className="flex justify-center">
+                        <span className="text-[11px] font-medium text-white bg-primary rounded-full px-2 py-0.5">
+                          {ongoing.priority}
+                        </span>
+                      </div>
+                    </div>
 
-                <div className="flex justify-center">
-                  <p>{complete.deadline}</p>
+                    <p className="text-black/60 font-medium pt-1 pb-2">
+                      {ongoing.description}
+                    </p>
+
+                    <p className="text-black/60 text-sm">
+                      {ongoing.start_date} - present
+                    </p>
+                  </div>
+
+                  <div className="flex flex-col justify-center items-center gap-4">
+                    <button
+                      onClick={() => handleOnGoingDelete(ongoing._id)}
+                      className="btn btn-sm normal-case text-xl bg-transparent hover:bg-transparent text-red-500 duration-300 shadow-none border-none hover:scale-125 hover:border-none"
+                    >
+                      <MdDelete />
+                    </button>
+
+                    <button
+                      onClick={() => handleOnGoingEdit(complete._id)}
+                      className="btn btn-sm normal-case text-xl bg-transparent hover:bg-transparent text-red-500 duration-300 shadow-none border-none hover:scale-125 hover:border-none"
+                    >
+                      <MdModeEdit />
+                    </button>
+                  </div>
                 </div>
+              ))}
+            </div>
+          </div>
 
-                <div className="flex justify-center">
-                  <span className="text-sm font-medium text-primary bg-primary/10 rounded-full px-3 py-1">
-                    {complete.priority}
-                  </span>
-                </div>
+          {/* complete */}
 
-                <div className="flex justify-center">
-                  <button
-                    onClick={() => handleCompleteDelete(complete._id)}
-                    className="btn btn-sm normal-case text-base bg-transparent hover:bg-red-500 text-red-500 hover:text-white duration-300 shadow-none border-2 border-red-500 hover:border-none"
-                  >
-                    Delete
-                  </button>
+          <div className="overflow-y-scroll border-2 bg-white rounded-3xl h-1/3 px-6">
+            <h3 className="text-2xl font-bold text-primary py-4">
+              Complete List
+            </h3>
+            <div>
+              {complete.map((complete, idx) => (
+                <div
+                  key={idx}
+                  className="flex justify-between items-center gap-10 bg-primary/20 rounded-3xl p-6 my-4"
+                >
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <p className="text-lg font-medium">{complete.title}</p>
+                      <div className="flex justify-center">
+                        <span className="text-[11px] font-medium text-white bg-primary rounded-full px-2 py-0.5">
+                          {complete.priority}
+                        </span>
+                      </div>
+                    </div>
+
+                    <p className="text-black/60 font-medium pt-1 pb-2">
+                      {complete.description}
+                    </p>
+
+                    <p className="text-black/60 text-sm">
+                      {complete.start_date} - {complete.complete_date}
+                    </p>
+                  </div>
+
+                  <div className="flex flex-col justify-center items-center gap-4">
+                    <button
+                      onClick={() => handleCompleteDelete(complete._id)}
+                      className="btn btn-sm normal-case text-xl bg-transparent hover:bg-transparent text-red-500 duration-300 shadow-none border-none hover:scale-125 hover:border-none"
+                    >
+                      <MdDelete />
+                    </button>
+
+                    <button
+                      onClick={() => handleCompleteEdit(complete._id)}
+                      className="btn btn-sm normal-case text-xl bg-transparent hover:bg-transparent text-red-500 duration-300 shadow-none border-none hover:scale-125 hover:border-none"
+                    >
+                      <MdModeEdit />
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </div>
