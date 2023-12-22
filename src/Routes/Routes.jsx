@@ -6,6 +6,7 @@ import SignIn from "../pages/SignIn";
 import Prices from "../pages/Prices";
 import TaskDashboard from "../pages/TaskDashboard";
 import PrivateRoutes from "./PrivateRoute";
+import Features from "../pages/Features";
 
 const router = createBrowserRouter([
   {
@@ -15,6 +16,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <Home />,
+      },
+      {
+        path: "/features",
+        element: <Features />,
       },
       {
         path: "/prices",
