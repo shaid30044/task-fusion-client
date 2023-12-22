@@ -1,7 +1,7 @@
 import Navbar from "../Shared/Navbar";
 import Footer from "../Shared/Footer";
 import { Helmet } from "react-helmet-async";
-import ToDoList from "../Components/TaskDashboard/ToDoList";
+import TaskList from "../Components/TaskDashboard/TaskList";
 
 function TaskDashboard() {
   return (
@@ -11,7 +11,7 @@ function TaskDashboard() {
       </Helmet>
 
       <Navbar />
-      <ToDoList />
+      <TaskList />
       <Footer />
     </div>
   );
